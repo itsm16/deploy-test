@@ -39,7 +39,7 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           # got into ec2
           script: |
-            docker pull itsm16/deploy-test:latest
-            docker stop deploy-test || true
-            docker rm deploy-test || true
-            docker run -d --name deploy-test -p 8000:8000 itsm16/deploy-test:latest
+            sudo docker pull itsm16/deploy-test:latest
+            sudo docker stop deploy-test || true
+            sudo docker rm deploy-test || true
+            sudo docker run -d --name deploy-test -p 8000:8000 itsm16/deploy-test:latest
