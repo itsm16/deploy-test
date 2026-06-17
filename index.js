@@ -3,7 +3,7 @@ import express from 'express'
 const app = express()
 
 app.get('/', (req, res) => {
-  res.json({ message: 'server is running v0', status: "actions-err-fix" })
+  res.json({ message: 'server is running v1', status: "docker test" })
 })
 
 app.listen(3000, () => {
