@@ -17,7 +17,7 @@ jobs:
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ubuntu
-          key: ${{ secrets.EC2_SSH_KEY }}
+          key: ${{ secrets.PRIVATE_KEY }}
           script: |
             echo "Deploying code to EC2"
             cd /home/ubuntu/deploy-test
