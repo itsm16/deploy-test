@@ -3,9 +3,9 @@ import express from 'express'
 const app = express()
 
 app.get('/', (req, res) => {
-  res.json({ message: 'server is running v1.2', status: "docker-test-fix" })
+  res.json({ message: 'server is running v1.3', status: "docker-port-fix" })
 })
 
-app.listen(3000, () => {
-  console.log('Example app listening on port 3000!')
+app.listen(8000, () => {
+  console.log('Example app listening on port 8000!')
 })
