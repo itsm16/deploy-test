@@ -8,10 +8,29 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      # got access to your code
+      # in github runner: got access to your code
       - name: Checkout code
         uses: actions/checkout@v4
+        
+      - name: Login to Docker Hub
+        uses: docker/login-action@v4
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      # inside github runner: pull, build and push docker image
+      - name: Build and push
+        run: |
+          docker build -t itsm16/deploy-test:latest .
+          docker push itsm16/deploy-test:latest
+      
+      # github runner machine ssh to ec2
       - name: SSH to EC2
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -20,29 +39,7 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           # got into ec2
           script: |
-            export NVM_DIR="$HOME/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-            echo "Deploying code to EC2"
-            cd /home/ubuntu/deploy-test
-            git pull origin main
-          # pm2 restart 0
-        
-      - name: Login to Docker Hub
-        uses: docker/login-action@v4
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN_2 }}
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v4
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4
-
-      - name: Build and push
-        uses: docker/build-push-action@v7
-        with:
-          push: true
-          tags: itsm16/deploy-test:latest
-
-        
+            docker pull itsm16/deploy-test:latest
+            docker stop deploy-test || true
+            docker rm deploy-test || true
+            docker run -d --name deploy-test -p 8000:8000 itsm16/deploy-test:latest
